@@ -2,7 +2,15 @@ require('dotenv').config()
 
 const express = require('express')
 const mongoose = require('mongoose')
+const { BlobServiceClient } = require('@azure/storage-blob')
 
+//azure storage
+const accountName = process.env.ACCOUNT_NAME
+const sasToken = process.env.SAS_TOKEN 
+const containerName = process.env.CONTAINER_NAME
+
+const BlobServiceClient = new BlobServiceClient('https://${accontName}.blob.core.windows.net/?${sasToken}')
+const containerClient = BlobServiceClient.getContainerClass(containerName)
 
 // express app
 const app = express()
