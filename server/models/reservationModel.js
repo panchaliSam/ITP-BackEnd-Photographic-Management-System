@@ -52,7 +52,7 @@ const ReservationSchema = new Schema({
         required:true
     },
     photographer:{
-        type:Int
+        type:String
     },
     specialRequest:{
         type:String
