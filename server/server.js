@@ -1,42 +1,37 @@
-require('dotenv').config()
+require('dotenv').config();
 
-const express = require('express')
-const mongoose = require('mongoose')
-const { BlobServiceClient } = require('@azure/storage-blob')
-
-//azure storage
-const accountName = process.env.ACCOUNT_NAME
-const sasToken = process.env.SAS_TOKEN 
-const containerName = process.env.CONTAINER_NAME
-
-const BlobServiceClient = new BlobServiceClient('https://${accontName}.blob.core.windows.net/?${sasToken}')
-const containerClient = BlobServiceClient.getContainerClass(containerName)
+const express = require('express');
+const mongoose = require('mongoose');
+const multer = require('multer');
+const eventPhotoRoutes = require('./routes/eventPhotoAlbums');
 
 // express app
-const app = express()
+const app = express();
 
-// middleware
-app.use(express.json())
-
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.json({mssg: 'Welcome to photographic app'})
-  })
+  res.json({mssg: 'Welcome to photographic app'})
+})
 
 // routes
-
+app.use('/api/eventPhotoAlbum', eventPhotoRoutes);
 
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('connected to database')
-    console.log('test')
+    console.log('Connected to database');
+
     // listen to port
     app.listen(process.env.PORT, () => {
-      console.log('listening for requests on port', process.env.PORT)
-    })
+      console.log('Listening for requests on port', process.env.PORT);
+    });
   })
   .catch((err) => {
-    console.log(err)
-  }) 
+    console.error('Error connecting to database:', err);
+  });
 
+
+module.exports = app;
